@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SingleBeerList from "../components/single-beer-list";
 import useBeerAPI from "../hooks/useBeerAPI";
 
 const BeerList = () => {
@@ -6,12 +7,19 @@ const BeerList = () => {
   const { beers, loading, error } = useBeerAPI({
     per_page: perPage,
     page: 1,
+    // beer_name: "punk",
   });
-  console.log(beers);
 
   const handleLoadMore = () => {
     setPerPage(perPage + 3);
   };
+
+  useEffect(() => {
+    return () => {
+      setPerPage(3);
+    };
+  }, []);
+
   return (
     <div>
       <h1>Beer List</h1>
@@ -20,26 +28,7 @@ const BeerList = () => {
       {beers?.length > 0 ? (
         <div>
           {beers.map((beer) => (
-            <div
-              key={beer.id}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "1rem",
-                padding: "1rem",
-                border: "1px solid #ccc",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.26)",
-              }}
-            >
-              <img src={beer.image_url} height={70} alt={beer.name} />
-              <div>
-                <h2>{beer.name}</h2>
-                <p>{beer.tagline}</p>
-                <p>{beer.description}</p>
-              </div>
-            </div>
+            <SingleBeerList key={beer.id} beer={beer} />
           ))}
         </div>
       ) : (
