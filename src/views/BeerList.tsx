@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import SingleBeerList from "../components/single-beer-list";
 import useBeerAPI from "../hooks/useBeerAPI";
 
+const DEFAULT_PER_PAGE = 4;
+const LOAD_MORE = 4;
 const BeerList = () => {
-  const [perPage, setPerPage] = useState(3);
+  const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
   const { beers, loading, error } = useBeerAPI({
     per_page: perPage,
     page: 1,
@@ -11,10 +13,11 @@ const BeerList = () => {
   });
 
   const handleLoadMore = () => {
-    setPerPage(perPage + 3);
+    setPerPage(perPage + LOAD_MORE);
   };
 
   useEffect(() => {
+    console.log("beers", beers);
     return () => {
       setPerPage(3);
     };

@@ -1,9 +1,8 @@
-import { Beer, BeerRequestParams } from "../models/beer";
+import { Beer } from "../models/beer";
 
 const ROOT_ENDPOINT = "https://api.punkapi.com/v2/";
 
 const getBeers = async (params: string) => {
-  // fix the typescript error here
   const response = await fetch(`${ROOT_ENDPOINT}beers?${params}`);
   return response.json();
 };
