@@ -2,8 +2,9 @@
 import styled from "styled-components";
 import { TooltipBox, TooltipCard, TooltipText } from "./tooltip";
 
-// typescript imports
 import { Beer } from "../models/beer";
+import getIngredientsString from "../helpers/ingredientsToString";
+import React from "react";
 interface SingleListProps {
   beer: Beer;
 }
@@ -12,73 +13,80 @@ const SingleBeerList = (props: SingleListProps) => {
   const { beer } = props;
   const ingredients = beer.ingredients;
 
-  const ingredientString = `Ingredients: ${
-    ingredients.hops.length > 0 ? "hops" : "no hops"
-  }${ingredients.malt.length > 0 ? "malt" : "no malt"} ${
-    ingredients.yeast ? "yeast" : "no yeast"
-  }`;
+  const ingredientString = React.useMemo(
+    () => getIngredientsString(ingredients),
+    [ingredients]
+  );
+
   return (
-    <CardContainer className="card_container">
+    <S.CardContainer>
       <TooltipCard>
         <TooltipText>
-          <ImageContainer
-            className="image_container"
-            src={beer.image_url}
-            height={100}
-            alt={beer.name}
-          />
+          <S.ImageContainer src={beer.image_url} alt={beer.name} />
         </TooltipText>
         <TooltipBox>
           <p>{ingredientString}</p>
         </TooltipBox>
       </TooltipCard>
-      <TextContainer className="text_container">
-        <h2>{beer.name}</h2>
-        <p>{beer.tagline}</p>
-        <p>{beer.description}</p>
-      </TextContainer>
-    </CardContainer>
+      <S.TextContainer>
+        <S.BeerName>{beer.name}</S.BeerName>
+        <S.Tagline>{beer.tagline}</S.Tagline>
+        <S.Description>{beer.description}</S.Description>
+      </S.TextContainer>
+    </S.CardContainer>
   );
 };
 
 export default SingleBeerList;
 
-const CardContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 80%;
-  height: 100%;
-  border-radius: 10px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  margin: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-  &:hover {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    background-color: #f5f5f5;
-  }
-`;
-const ImageContainer = styled.img`
-  border-radius: 10px;
-  margin-right: 10px;
-`;
-const TextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  margin-left: 10px;
+const S = {
+  CardContainer: styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    margin: 10px 0;
+    padding: 10px;
+    &:hover {
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+      background-color: #f5f5f5;
+    }
+  `,
+  ImageContainer: styled.img`
+    height: 100px;
+    width: 100%;
+    border-radius: 10px;
+    margin-right: 10px;
+  `,
+  TextContainer: styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    margin-left: 10px;
+  `,
+  BeerName: styled.h2`
+    margin-top: 5px;
+    margin-bottom: 0px;
+  `,
 
-  & > h2 {
-    font-size: 1.5rem;
+  Tagline: styled.p`
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 10px;
-  }
-  & > p {
-    font-size: 1rem;
+    color: orange;
+    margin-top: 5px;
+    margin-bottom: 0px;
+  `,
+  Description: styled.p`
+    font-size: 0.8rem;
     font-weight: 400;
-    margin-bottom: 10px;
-  }
-`;
+    color: #333;
+    margin-top: 5px;
+    margin-bottom: 0px;
+  `,
+};

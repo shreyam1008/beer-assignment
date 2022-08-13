@@ -13,15 +13,15 @@ export const TooltipBox = styled.div`
   width: 150px;
   padding: 5px 5px;
   border-radius: 4px;
-
-  transition: visibility 0.5s, color 0.5s, background-color 0.5s, width 0.5s,
-    padding 0.5s ease-in-out;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  z-index: 1;
 
   &:before {
     content: "";
     width: 0;
     height: 0;
-    left: 40px;
+    left: 20px;
     top: -10px;
     position: absolute;
 

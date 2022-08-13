@@ -1,3 +1,13 @@
+export interface Ingredients {
+  hops: {
+    name: string;
+  }[];
+  malt: {
+    name: string;
+  }[];
+  yeast: string;
+}
+
 export interface Beer {
   id: number;
   name: string;
@@ -5,25 +15,7 @@ export interface Beer {
   first_brewed: string;
   description: string;
   image_url: string;
-  ingredients: {
-    malt: {
-      name: string;
-      amount: {
-        value: number;
-        unit: string;
-      };
-    }[];
-    hops: {
-      name: string;
-      amount: {
-        value: number;
-        unit: string;
-      };
-      add: string;
-      attribute: string;
-    }[];
-    yeast: string;
-  };
+  ingredients: Ingredients;
 }
 export interface BeerRequestParams {
   page?: number;
