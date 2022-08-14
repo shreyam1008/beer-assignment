@@ -2,15 +2,15 @@ import styled from "styled-components";
 
 interface HeaderProps {
   title: string;
-  imageUrl?: string;
+  image?: any;
 }
 
 const Header = (props: HeaderProps) => {
-  const { title, imageUrl } = props;
+  const { title, image } = props;
   return (
     <S.HeaderContainer>
       <S.HeaderImage>
-        {imageUrl && <S.ImageContainer src={imageUrl} alt={title} />}
+        {image && <S.ImageContainer src={image} alt={title} />}
       </S.HeaderImage>
       <S.HeaderText>{title}</S.HeaderText>
     </S.HeaderContainer>
@@ -29,7 +29,9 @@ const S = {
     font-size: 2rem;
     font-weight: 700;
   `,
-  HeaderImage: styled.div``,
+  HeaderImage: styled.div`
+    margin: 0 2rem;
+  `,
   ImageContainer: styled.img`
     height: 100px;
     width: 100px;

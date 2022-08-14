@@ -10,9 +10,10 @@ interface SingleListProps {
   beer: Beer;
 }
 
+// change: to beer card
 const SingleBeerList = (props: SingleListProps) => {
   const { beer } = props;
-  const ingredients = beer.ingredients;
+  const { ingredients, image_url, name, tagline, description } = beer;
 
   const ingredientString = React.useMemo(
     () => getIngredientsString(ingredients),
@@ -24,17 +25,18 @@ const SingleBeerList = (props: SingleListProps) => {
       <TooltipCard>
         <TooltipText>
           <S.ImageContainer>
-            <S.Image src={beer.image_url} alt={beer.name} />
+            <S.Image src={image_url} alt={name} />
           </S.ImageContainer>
         </TooltipText>
         <TooltipBox>
+          {/* change: use styled component */}
           <p>{ingredientString}</p>
         </TooltipBox>
       </TooltipCard>
       <S.TextContainer>
-        <S.BeerName>{beer.name}</S.BeerName>
-        <S.Tagline>{beer.tagline}</S.Tagline>
-        <S.Description>{beer.description}</S.Description>
+        <S.BeerName>{name}</S.BeerName>
+        <S.Tagline>{tagline}</S.Tagline>
+        <S.Description>{description}</S.Description>
       </S.TextContainer>
     </S.CardContainer>
   );
