@@ -9,34 +9,40 @@ import { device } from "../styles/global";
 import BeerCard from "../components/beer-card";
 import { useBeerContext } from "../context/beerContext";
 import { Link } from "react-router-dom";
+import { Beer, BeerRequestParams } from "../models/beer";
 
 const BEERS_TO_SHOW_PER_PAGE = 2;
 const DEFAULT_PAGE = 1;
 const BeerList = () => {
   const { beerList, setBeerList } = useBeerContext();
+  // const [beerList, setBeerList] = useState<Beer[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(DEFAULT_PAGE);
+
   const { beers, loading, error } = useBeerAPI({
     per_page: BEERS_TO_SHOW_PER_PAGE,
     page: pageNumber,
   });
 
-  useEffect(() => {
-    let subscribed = true;
-    const loadData = async () => {
-      console.log("new beer list", beers);
-      if (subscribed) {
-        setBeerList((prev) =>
-          JSON.stringify(prev) === JSON.stringify(beers)
-            ? prev
-            : [...prev, ...beers]
-        );
-      }
-    };
-    loadData();
-    return () => {
-      subscribed = false;
-    };
-  }, [beers]);
+  useEffect(
+    () => {
+      console.log("beer list", beers);
+      (async () => {
+        try {
+          setBeerList((previous_beer_list) => [
+            ...previous_beer_list,
+            ...beers,
+          ]);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+      return () => {
+        console.log("cleanup");
+      };
+    },
+    // comparision not working with array vs array
+    [beers]
+  );
 
   const handleLoadMore = () => {
     setPageNumber((previous_page_number) => previous_page_number + 1);

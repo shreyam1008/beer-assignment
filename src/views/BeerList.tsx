@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { getBeers } from "../api/beer-api";
 import Header from "../components/header";
 import PageLoader, { LoadingButton } from "../components/loaders";
-import beerLogo from "../assets/images/beer_header.png";
+import beerLogo from "../assets/images/beer_header.svg";
 
 import { device } from "../styles/global";
 import BeerCard from "../components/beer-card";
 import { useBeerContext } from "../context/beerContext";
 import { Link } from "react-router-dom";
+import { Beer, BeerRequestParams } from "../models/beer";
+import createURLSearchParams from "../helpers/createURLSearchParams";
 
 const BEERS_TO_SHOW_PER_PAGE = 2;
 const DEFAULT_PAGE = 1;
@@ -19,10 +21,10 @@ const BeerList = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const parameters = new URLSearchParams({
-        per_page: BEERS_TO_SHOW_PER_PAGE,
-        page: pageNumber,
-      } as any).toString();
+      const parameters = createURLSearchParams({
+        per_page: BEERS_TO_SHOW_PER_PAGE.toString(),
+        page: pageNumber.toString(),
+      });
       try {
         const beerList = await getBeers(parameters);
         setBeerList(beerList);
@@ -36,14 +38,13 @@ const BeerList = () => {
 
   const handleLoadMore = async () => {
     setIsLoading(true);
-    const parameters = new URLSearchParams({
-      per_page: BEERS_TO_SHOW_PER_PAGE,
-      page: pageNumber + 1,
-    } as any).toString();
+    const parameters = createURLSearchParams({
+      per_page: BEERS_TO_SHOW_PER_PAGE.toString(),
+      page: (pageNumber + 1).toString(),
+    });
     try {
       const pageBeerList = await getBeers(parameters);
-      console.log(pageBeerList);
-      setBeerList((previous_beer_list: any) => [
+      setBeerList((previous_beer_list) => [
         ...previous_beer_list,
         ...pageBeerList,
       ]);

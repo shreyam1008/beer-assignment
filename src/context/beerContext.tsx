@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Beer } from "../models/beer";
 
 const defaultBeerList: Beer[] = [];
