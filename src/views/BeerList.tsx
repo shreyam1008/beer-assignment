@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { getBeers } from "../api/beer-api";
 import Header from "../components/header";
@@ -8,76 +8,79 @@ import beerLogo from "../assets/images/beer_header.svg";
 import { device } from "../styles/global";
 import BeerCard from "../components/beer-card";
 import { useBeerContext } from "../context/beerContext";
-import { Link } from "react-router-dom";
-import { Beer, BeerRequestParams } from "../models/beer";
 import createURLSearchParams from "../helpers/createURLSearchParams";
 
 const BEERS_TO_SHOW_PER_PAGE = 2;
 const DEFAULT_PAGE = 1;
+
 const BeerList = () => {
   const { beerList, setBeerList } = useBeerContext();
   const [pageNumber, setPageNumber] = useState<number>(DEFAULT_PAGE);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadData = async () => {
+  const loadData = useCallback(
+    async ({ pageNumber }: { pageNumber: number }) => {
+      let beerList = [];
+      setIsLoading(true);
       const parameters = createURLSearchParams({
-        per_page: BEERS_TO_SHOW_PER_PAGE.toString(),
-        page: pageNumber.toString(),
+        per_page: BEERS_TO_SHOW_PER_PAGE,
+        page: pageNumber,
       });
       try {
-        const beerList = await getBeers(parameters);
-        setBeerList(beerList);
+        beerList = await getBeers(parameters);
       } catch (e) {
-        console.log(e);
+        setError("Something went wrong");
+      } finally {
+        setIsLoading(false);
       }
-    };
-    loadData();
-    return () => {};
+      return beerList;
+    },
+    [setIsLoading]
+  );
+
+  useEffect(() => {
+    (async () => {
+      const beerList = await loadData({ pageNumber });
+      setBeerList(beerList);
+    })();
   }, []);
 
   const handleLoadMore = async () => {
     setIsLoading(true);
-    const parameters = createURLSearchParams({
-      per_page: BEERS_TO_SHOW_PER_PAGE.toString(),
-      page: (pageNumber + 1).toString(),
-    });
-    try {
-      const pageBeerList = await getBeers(parameters);
-      setBeerList((previous_beer_list) => [
-        ...previous_beer_list,
-        ...pageBeerList,
-      ]);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoading(false);
-    }
+    const pageBeerList = await loadData({ pageNumber: pageNumber + 1 });
+    setBeerList((previous_beer_list) => [
+      ...previous_beer_list,
+      ...pageBeerList,
+    ]);
     setPageNumber((previous_page_number) => previous_page_number + 1);
   };
 
-  if (beerList.length === 0) return <PageLoader />;
+  if (beerList.length === 0 && isLoading) return <PageLoader />;
 
   return (
     <div>
-      <Link to="/">Home</Link>
-      --
-      <Link to="/beer">Beer</Link>
       <Header title="Beer List" image={beerLogo} />
-      <S.BeerListContainer>
-        {beerList.map((beer: any) => (
-          <BeerCard key={beer.id} beer={beer} />
-        ))}
-      </S.BeerListContainer>
-      <S.ButtonContainer>
-        {isLoading ? (
-          <LoadingButton />
-        ) : (
-          <S.LoadMoreButton onClick={handleLoadMore}>
-            Load More ▼
-          </S.LoadMoreButton>
-        )}
-      </S.ButtonContainer>
+      {error ? (
+        <div>{error}</div>
+      ) : (
+        <>
+          <S.BeerListContainer>
+            {beerList.map((beer: any) => (
+              <BeerCard key={beer.id} beer={beer} />
+            ))}
+          </S.BeerListContainer>
+          <S.ButtonContainer>
+            {isLoading ? (
+              <LoadingButton />
+            ) : (
+              <S.LoadMoreButton onClick={handleLoadMore}>
+                Load More ▼
+              </S.LoadMoreButton>
+            )}
+          </S.ButtonContainer>
+        </>
+      )}
     </div>
   );
 };

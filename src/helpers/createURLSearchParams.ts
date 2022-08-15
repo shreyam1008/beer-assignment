@@ -1,4 +1,6 @@
-const createURLSearchParams = (params: Record<string, string>) => {
-  return new URLSearchParams(params).toString();
+import { BeerRequestParams } from "../models/beer";
+
+const createURLSearchParams = (params: BeerRequestParams) => {
+  return new URLSearchParams(params as any).toString();
 };
 export default createURLSearchParams;
