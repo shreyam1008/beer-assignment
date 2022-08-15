@@ -6,12 +6,10 @@ import { TooltipBox, TooltipCard, TooltipText } from "./tooltip";
 import { Beer } from "../models/beer";
 import getIngredientsString from "../helpers/ingredientsToString";
 import React from "react";
-interface SingleListProps {
+interface BeerCard {
   beer: Beer;
 }
-
-// change: to beer card
-const SingleBeerList = (props: SingleListProps) => {
+const BeerCard = (props: BeerCard) => {
   const { beer } = props;
   const { ingredients, image_url, name, tagline, description } = beer;
 
@@ -42,7 +40,7 @@ const SingleBeerList = (props: SingleListProps) => {
   );
 };
 
-export default SingleBeerList;
+export default BeerCard;
 
 const S = {
   CardContainer: styled.div`
@@ -61,8 +59,11 @@ const S = {
     }
   `,
   ImageContainer: styled.div`
-    margin: 0 15px 0 25px;
+    margin: 0 15px 0 20px;
     width: 60px;
+    @media ${device.laptop} {
+      margin: 0 5px;
+    }
     @media ${device.tablet} {
       width: 40px;
       margin: 0;
@@ -79,8 +80,13 @@ const S = {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* height: 100%; */
     margin-left: 20px;
+    @media ${device.laptop} {
+      margin: 0 0px;
+    }
+    @media ${device.tablet} {
+      margin: 0 15px;
+    }
   `,
   BeerName: styled.h2`
     margin-top: 5px;

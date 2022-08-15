@@ -9,11 +9,9 @@ const useBeerAPI = (params: BeerRequestParams) => {
   const parameters = new URLSearchParams(params as any).toString();
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
     const fetchBeer = async () => {
       try {
-        const data = await getBeers(parameters, signal);
+        const data = await getBeers(parameters);
         setBeers(data);
       } catch (error) {
         setError("Error to get the beer list");
@@ -22,9 +20,7 @@ const useBeerAPI = (params: BeerRequestParams) => {
       }
     };
     fetchBeer();
-    return () => {
-      controller.abort();
-    };
+    return () => {};
   }, [parameters]);
 
   return { beers, loading, error };

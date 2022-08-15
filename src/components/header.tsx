@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface HeaderProps {
   title: string;
-  image?: any;
+  image?: string;
 }
 
 const Header = (props: HeaderProps) => {

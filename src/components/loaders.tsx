@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-const Loader: React.FC = () => {
+const PageLoader: React.FC = () => {
   return <S.Loader>↻</S.Loader>;
 };
 
-export default Loader;
+export default PageLoader;
 
 export const LoadingButton: React.FC = () => {
   return <S.LoadingButton>↻</S.LoadingButton>;
@@ -12,6 +12,11 @@ export const LoadingButton: React.FC = () => {
 
 const S = {
   Loader: styled.div`
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 50px;
     font-weight: 600;
     color: gray;

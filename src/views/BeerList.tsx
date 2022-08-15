@@ -2,23 +2,22 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getBeers } from "../api/beer-api";
 import Header from "../components/header";
-import Loader, { LoadingButton } from "../components/loaders";
-import SingleBeerList from "../components/single-beer-list";
+import PageLoader, { LoadingButton } from "../components/loaders";
 import useBeerAPI from "../hooks/useBeerAPI";
 import beerLogo from "../assets/images/beer_header.png";
 
 import { device } from "../styles/global";
-import { Beer } from "../models/beer";
+import BeerCard from "../components/beer-card";
+import { useBeerContext } from "../context/beerContext";
 
 const BEERS_TO_SHOW_PER_PAGE = 2;
+const DEFAULT_PAGE = 1;
 const BeerList = () => {
-  const [beerList, setBeerList] = useState<Beer[]>([]);
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const { beerList, setBeerList } = useBeerContext();
+  const [pageNumber, setPageNumber] = useState<number>(DEFAULT_PAGE);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    let subscribed = true;
-    console.log("something");
     const loadData = async () => {
       const parameters = new URLSearchParams({
         per_page: BEERS_TO_SHOW_PER_PAGE,
@@ -26,21 +25,17 @@ const BeerList = () => {
       } as any).toString();
       try {
         const beerList = await getBeers(parameters);
-        if (subscribed) {
-          setBeerList(beerList);
-        }
+
+        setBeerList(beerList);
       } catch (e) {
         console.log(e);
       }
     };
     loadData();
-    return () => {
-      subscribed = false;
-    };
+    return () => {};
   }, []);
 
   const handleLoadMore = async () => {
-    console.log("handleLoadMore");
     setIsLoading(true);
     const parameters = new URLSearchParams({
       per_page: BEERS_TO_SHOW_PER_PAGE,
@@ -60,25 +55,14 @@ const BeerList = () => {
     setPageNumber((previous_page_number) => previous_page_number + 1);
   };
 
-  if (beerList.length === 0) return;
-  <div
-    style={
-      {
-        // display: "flex",
-        // justifyContent: "center",
-        // alignItems: "center",
-      }
-    }
-  >
-    <Loader />;
-  </div>;
+  if (beerList.length === 0) return <PageLoader />;
 
   return (
     <div>
       <Header title="Beer List" image={beerLogo} />
       <S.BeerListContainer>
         {beerList.map((beer: any) => (
-          <SingleBeerList key={beer.id} beer={beer} />
+          <BeerCard key={beer.id} beer={beer} />
         ))}
       </S.BeerListContainer>
       <S.ButtonContainer>
@@ -118,6 +102,8 @@ const S = {
     background-color: white;
     color: #2424d3;
     border: none;
+    font-size: 15px;
+    font-weight: 600;
     &:hover {
       background-color: #f5f5f5;
     }
