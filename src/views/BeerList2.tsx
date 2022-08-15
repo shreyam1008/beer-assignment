@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getBeers } from "../api/beer-api";
 import Header from "../components/header";
 import PageLoader, { LoadingButton } from "../components/loaders";
+import useBeerAPI from "../hooks/useBeerAPI";
 import beerLogo from "../assets/images/beer_header.png";
 
 import { device } from "../styles/global";
@@ -15,43 +15,30 @@ const DEFAULT_PAGE = 1;
 const BeerList = () => {
   const { beerList, setBeerList } = useBeerContext();
   const [pageNumber, setPageNumber] = useState<number>(DEFAULT_PAGE);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { beers, loading, error } = useBeerAPI({
+    per_page: BEERS_TO_SHOW_PER_PAGE,
+    page: pageNumber,
+  });
 
   useEffect(() => {
+    let subscribed = true;
     const loadData = async () => {
-      const parameters = new URLSearchParams({
-        per_page: BEERS_TO_SHOW_PER_PAGE,
-        page: pageNumber,
-      } as any).toString();
-      try {
-        const beerList = await getBeers(parameters);
-        setBeerList(beerList);
-      } catch (e) {
-        console.log(e);
+      console.log("new beer list", beers);
+      if (subscribed) {
+        setBeerList((prev) =>
+          JSON.stringify(prev) === JSON.stringify(beers)
+            ? prev
+            : [...prev, ...beers]
+        );
       }
     };
     loadData();
-    return () => {};
-  }, []);
+    return () => {
+      subscribed = false;
+    };
+  }, [beers]);
 
-  const handleLoadMore = async () => {
-    setIsLoading(true);
-    const parameters = new URLSearchParams({
-      per_page: BEERS_TO_SHOW_PER_PAGE,
-      page: pageNumber + 1,
-    } as any).toString();
-    try {
-      const pageBeerList = await getBeers(parameters);
-      console.log(pageBeerList);
-      setBeerList((previous_beer_list: any) => [
-        ...previous_beer_list,
-        ...pageBeerList,
-      ]);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleLoadMore = () => {
     setPageNumber((previous_page_number) => previous_page_number + 1);
   };
 
@@ -69,7 +56,7 @@ const BeerList = () => {
         ))}
       </S.BeerListContainer>
       <S.ButtonContainer>
-        {isLoading ? (
+        {loading ? (
           <LoadingButton />
         ) : (
           <S.LoadMoreButton onClick={handleLoadMore}>

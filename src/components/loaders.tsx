@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const PageLoader: React.FC = () => {
-  return <S.Loader>↻</S.Loader>;
+  return <S.PageLoader>↻</S.PageLoader>;
 };
 
 export default PageLoader;
@@ -11,7 +11,7 @@ export const LoadingButton: React.FC = () => {
 };
 
 const S = {
-  Loader: styled.div`
+  PageLoader: styled.div`
     height: 100vh;
     width: 100vw;
     display: flex;

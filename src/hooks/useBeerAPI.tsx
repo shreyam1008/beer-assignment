@@ -4,8 +4,8 @@ import { Beer, BeerRequestParams } from "../models/beer";
 
 const useBeerAPI = (params: BeerRequestParams) => {
   const [beers, setBeers] = useState<Beer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const parameters = new URLSearchParams(params as any).toString();
 
   useEffect(() => {
@@ -20,7 +20,9 @@ const useBeerAPI = (params: BeerRequestParams) => {
       }
     };
     fetchBeer();
-    return () => {};
+    return () => {
+      setLoading(true);
+    };
   }, [parameters]);
 
   return { beers, loading, error };
