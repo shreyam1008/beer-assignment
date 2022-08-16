@@ -10,7 +10,7 @@ import BeerCard from "../components/beer-card";
 import { useBeerContext } from "../context/beerContext";
 import createURLSearchParams from "../helpers/createURLSearchParams";
 
-const BEERS_TO_SHOW_PER_PAGE = 2;
+const BEERS_TO_SHOW_PER_PAGE = 4;
 const DEFAULT_PAGE = 1;
 
 const BeerList = () => {
@@ -66,7 +66,7 @@ const BeerList = () => {
       ) : (
         <>
           <S.BeerListContainer>
-            {beerList.map((beer: any) => (
+            {beerList.map((beer) => (
               <BeerCard key={beer.id} beer={beer} />
             ))}
           </S.BeerListContainer>
