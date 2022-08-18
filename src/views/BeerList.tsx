@@ -47,7 +47,6 @@ const BeerList = () => {
   }, []);
 
   const handleLoadMore = async () => {
-    setIsLoading(true);
     const pageBeerList = await loadData({ pageNumber: pageNumber + 1 });
     setBeerList((previous_beer_list) => [
       ...previous_beer_list,
